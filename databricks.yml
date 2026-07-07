@@ -5,7 +5,8 @@ resources:
   apps:
     agent_openai_agents_sdk_multiagent:
       name: "agent-openai-multiagent"
-      description: "Multi-agent orchestrator that queries other agents, Genie spaces, and serving endpoints"
+      description: "Multi-agent orchestrator that queries other agents, Genie spaces,
+        and serving endpoints"
       source_code_path: ./
       config:
         command: ["uv", "run", "start-app"]
@@ -27,34 +28,33 @@ resources:
       resources:
         - name: 'experiment'
           experiment:
-            experiment_id: ""
+            experiment_id: "2544956800913137"
             permission: 'CAN_MANAGE'
 
-        # TODO: Set your Genie space ID
-        - name: 'genie_space'
+        - name: 'dpe_insights_genie'
           genie_space:
-            name: 'Genie Space'
-            space_id: '<YOUR-GENIE-SPACE-ID>'
+            name: 'DPE Insights Genie Space'
+            space_id: '01f071a62ebd1e798002fd1267d360b5'  # UUID from the Genie space URL
             permission: 'CAN_RUN'
 
-        # TODO: Set your knowledge-assistant serving endpoint name
-        - name: 'knowledge_assistant'
-          serving_endpoint:
-            name: '<YOUR-KNOWLEDGE-ASSISTANT-ENDPOINT>'
-            permission: 'CAN_QUERY'
+        # # TODO: Set your knowledge-assistant serving endpoint name
+        # - name: 'knowledge_assistant'
+        #   serving_endpoint:
+        #     name: '<YOUR-KNOWLEDGE-ASSISTANT-ENDPOINT>'
+        #     permission: 'CAN_QUERY'
 
-        # TODO: Set your serving endpoint name
-        - name: 'serving_endpoint'
-          serving_endpoint:
-            name: '<YOUR-SERVING-ENDPOINT>'
-            permission: 'CAN_QUERY'
+        # # TODO: Set your serving endpoint name
+        # - name: 'serving_endpoint'
+        #   serving_endpoint:
+        #     name: '<YOUR-SERVING-ENDPOINT>'
+        #     permission: 'CAN_QUERY'
 
-        # TODO: Set the target app name to grant CAN_USE access.
-        # Requires CLI v0.298.0+ for native app-to-app bundle resource support.
-        - name: 'agent_app'
-          app:
-            name: '<YOUR-TARGET-APP-NAME>'
-            permission: 'CAN_USE'
+        # # TODO: Set the target app name to grant CAN_USE access.
+        # # Requires CLI v0.298.0+ for native app-to-app bundle resource support.
+        # - name: 'agent_app'
+        #   app:
+        #     name: '<YOUR-TARGET-APP-NAME>'
+        #     permission: 'CAN_USE'
 
 targets:
   dev:

@@ -58,15 +58,15 @@ from agent_server.utils import (
 SUBAGENTS = [
     # Uncomment and configure the subagents you need. You must enable at least one.
     #
-    # {
-    #     "name": "genie",
-    #     "type": "genie",
-    #     "space_id": "<YOUR-GENIE-SPACE-ID>",  # UUID from the Genie space URL
-    #     "description": (
-    #         "Query a Genie space for structured data analysis. "
-    #         "Use this for questions about data, metrics, and tables."
-    #     ),
-    # },
+    {
+        "name": "dpe_insights_genie",
+        "type": "genie",
+        "space_id": "01f071a62ebd1e798002fd1267d360b5",  # UUID from the Genie space URL
+        "description": (
+            "Query a Genie space for structured data analysis. "
+            "Use this for questions about DPE Insights."
+        )
+    }
     # {
     #     "name": "app_agent",
     #     "type": "app",
@@ -170,13 +170,13 @@ def create_orchestrator_agent(mcp_server: McpServer) -> Agent:
         instructions=(
             "You are an orchestrator agent. Route the user's request to the "
             "most appropriate tool or data source:\n"
-            "- Use the Genie MCP tools for questions about structured data.\n"
-            "- Use query_app_agent for questions that the specialist app agent handles.\n"
-            "- Use query_knowledge_assistant for knowledge-base / documentation lookups.\n"
-            "- Use query_serving_endpoint for questions best answered by the serving model.\n"
+            "- Use the dpe_insights_genie for questions about DPE Insights.\n"
+            # "- Use query_app_agent for questions that the specialist app agent handles.\n"
+            # "- Use query_knowledge_assistant for knowledge-base / documentation lookups.\n"
+            # "- Use query_serving_endpoint for questions best answered by the serving model.\n"
             "If unsure, ask the user for clarification."
         ),
-        model="databricks-gpt-5-2",  # TODO: change model if desired
+        model="databricks-gpt-oss-20b",  # TODO: change model if desired
         mcp_servers=[mcp_server] if mcp_server else [],
         tools=subagent_tools,
     )
@@ -195,7 +195,13 @@ async def invoke_handler(request: ResponsesAgentRequest) -> ResponsesAgentRespon
     # user_workspace_client = get_user_workspace_client()
     async with await init_mcp_server() as mcp_server:
         agent = create_orchestrator_agent(mcp_server)
-        messages = [i.model_dump() for i in request.input]
+        # Convert request items to message dicts - handle both object and dict formats
+        messages = []
+        for item in request.input:
+            if isinstance(item, dict):
+                messages.append(item)
+            else:
+                messages.append(item.model_dump())
         result = await Runner.run(agent, messages)
         return ResponsesAgentResponse(output=[item.to_input_item() for item in result.new_items])
 
